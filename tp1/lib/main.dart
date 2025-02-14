@@ -25,19 +25,40 @@ class BottomNavigationBarExample extends StatefulWidget {
       _BottomNavigationBarExampleState();
 }
 
-class _BottomNavigationBarExampleState
-    extends State<BottomNavigationBarExample> {
+class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
+  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+  static var theme = ThemeData(useMaterial3: true,colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 45, 194, 110)));
+  static List<Widget> _widgetOptions = <Widget>[
     Text(
       'Index 0: Home',
       style: optionStyle,
     ),
-    Text(
-      'Index 1: Media',
-      style: optionStyle,
+    //Text(
+    //  'Index 1: Media',
+    //  style: optionStyle,
+    //),
+    ListView(
+      padding: const EdgeInsets.all(8),
+      children: <Widget>[
+        Container(
+          height: 50,
+          color : theme.colorScheme.primary,
+          //color: theme.colorScheme.primary,
+          //color: (ThemeData get).colorScheme.primary,
+          child: const Center(child: Text('Entry A')),
+        ),
+        Container(
+          height: 50,
+          color: theme.colorScheme.primary,
+          child: const Center(child: Text('Entry B')),
+        ),
+        Container(
+          height: 50,
+          color: theme.colorScheme.primary,
+          child: const Center(child: Text('Entry C')),
+        ),
+      ],
     ),
     Text(
       'Index 2: About',
