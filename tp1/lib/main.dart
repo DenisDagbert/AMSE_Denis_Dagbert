@@ -36,11 +36,11 @@ class _BottomNavigationBarExampleState
       style: optionStyle,
     ),
     Text(
-      'Index 1: Business',
+      'Index 1: Media',
       style: optionStyle,
     ),
     Text(
-      'Index 2: School',
+      'Index 2: About',
       style: optionStyle,
     ),
   ];
@@ -74,12 +74,12 @@ class _BottomNavigationBarExampleState
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: 'Business',
+            icon: Icon(Icons.perm_media),
+            label: 'Media',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'School',
+            icon: Icon(Icons.settings),
+            label: 'About',
           ),
         ],
         currentIndex: _selectedIndex,
