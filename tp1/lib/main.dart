@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:english_words/english_words.dart';
 
 /// Flutter code sample for [BottomNavigationBar].
 
 void main() => runApp(const BottomNavigationBarExampleApp());
+
+var favorites = <WordPair>[];
 
 class BottomNavigationBarExampleApp extends StatelessWidget {
   const BottomNavigationBarExampleApp({super.key});
@@ -17,6 +21,34 @@ class BottomNavigationBarExampleApp extends StatelessWidget {
   }
 }
 
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) => MyAppState(),
+      child: MaterialApp(
+        home: HomePage(),
+      ),
+    );
+  }
+}
+
+class MyAppState extends ChangeNotifier {
+
+  var favorites = <WordPair>[];
+
+  void toggleFavorite(current) {
+    ///if (favorites.contains(current)) {
+      ///favorites.remove(current);
+    ///} else {
+      ///favorites.add(current);
+    ///}
+    notifyListeners();
+  }
+}
+
 class BottomNavigationBarExample extends StatefulWidget {
   const BottomNavigationBarExample({super.key});
 
@@ -27,8 +59,10 @@ class BottomNavigationBarExample extends StatefulWidget {
 
 class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample> {
   int _selectedIndex = 0;
+
   static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static var theme = ThemeData(useMaterial3: true,colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 45, 194, 110)));
+  
   static List<Widget> _widgetOptions = <Widget>[
     Text(
       'Index 0: Home',
@@ -46,20 +80,11 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
           color : theme.colorScheme.primary,
           //color: theme.colorScheme.primary,
           //color: (ThemeData get).colorScheme.primary,
-          child: const Center(child: Text('Entry A')),
-        ),
-        Container(
-          height: 50,
-          color: theme.colorScheme.primary,
-          child: const Center(child: Text('Entry B')),
-        ),
-        Container(
-          height: 50,
-          color: theme.colorScheme.primary,
-          child: const Center(child: Text('Entry C')),
+          child: const Center(child: Text('Entry A')),      
         ),
       ],
     ),
+    FavoritesPage(),
     Text(
       'Index 2: About',
       style: optionStyle,
@@ -99,15 +124,65 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
             label: 'Media',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favorite',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: 'About',
-          ),
+          ),   
         ],
         currentIndex: _selectedIndex,
         ///selectedItemColor: const Color.fromARGB(255, 20, 120, 80),
         selectedItemColor: theme.colorScheme.primary,
         onTap: _onItemTapped,
       ),
+    );
+  }
+}
+
+class FavoritesPage extends StatelessWidget {
+  @override
+    ///@override
+  ///Widget build(BuildContext context) {
+    ///return 
+    ///Text(
+    ///  'FavoritesPage',
+    ///);
+  ///}
+  Widget build(BuildContext context) {
+    builder: (context,MyAppState);
+    ///var appState = context.watch<MyAppState>();
+
+    if (favorites.isEmpty) {
+      return Center(child: Text('No favorites yet.'));
+    }
+
+    return ListView(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Text(
+            'You have '
+            '${favorites.length} favorites:',
+          ),
+        ),
+        for (var pair in favorites)
+          ListTile(
+            leading: Icon(Icons.favorite),
+            title: Text(pair.asLowerCase),
+          ),
+      ],
+    );
+  }
+}
+
+class HomePage extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return 
+    Text(
+      'HomePage',
     );
   }
 }
