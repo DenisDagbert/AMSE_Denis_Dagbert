@@ -1,12 +1,19 @@
+//import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:english_words/english_words.dart';
+//import 'package:english_words/english_words.dart';
+
 
 /// Flutter code sample for [BottomNavigationBar].
 
 void main() => runApp(const BottomNavigationBarExampleApp());
 
-var favorites = <WordPair>[];
+//creating small database  manually
+BandeDessinee bd1 = new BandeDessinee('Astérix',7,'Le combat des chefs','Uderzo - Goscinny',1966,4.61);
+BandeDessinee bd2 = new BandeDessinee('Astérix',11,'Le bouclier Arverne','Uderzo - Goscinny',1968,4.61);
+BandeDessinee bd3 = new BandeDessinee('Gaston',14,'La saga des gaffes','Franquin',1982,4.61);
+var favorites = <BandeDessinee>[bd1,bd2,bd3];
 
 class BottomNavigationBarExampleApp extends StatelessWidget {
   const BottomNavigationBarExampleApp({super.key});
@@ -37,7 +44,7 @@ class MyApp extends StatelessWidget {
 
 class MyAppState extends ChangeNotifier {
 
-  var favorites = <WordPair>[];
+  //var favorites = <WordPair>[];
 
   void toggleFavorite(current) {
     ///if (favorites.contains(current)) {
@@ -167,11 +174,22 @@ class FavoritesPage extends StatelessWidget {
             '${favorites.length} favorites:',
           ),
         ),
-        for (var pair in favorites)
-          ListTile(
+
+        Wrap(
+          spacing: 10, // Horizontal space
+          runSpacing: 10, // Vertical space
+          children: favorites.map((bd) => bd.widgetBD()).toList(),
+        )
+
+        /*for (var bd in favorites)
+          bd.widgetBD(),
+          SizedBox(
+            height: 10
+          ),
+          /*ListTile(
             leading: Icon(Icons.favorite),
             title: Text(pair.asLowerCase),
-          ),
+          ),*/*/
       ],
     );
   }
@@ -186,3 +204,72 @@ class HomePage extends StatelessWidget{
     );
   }
 }
+
+//creating manually small db for tests
+
+class BandeDessinee{
+  String titreSerie = "";
+  int tome = 0;
+  String titreAlbum = "";
+  String auteur = "";
+  int date = 0;
+  double note = 0;
+
+  BandeDessinee(String tS, int t, String tA, String a, int d, double n){
+    titreSerie = tS;
+    tome = t;
+    titreAlbum = tA;
+    auteur = a;
+    date = d;
+    note = n; 
+  }
+
+  Widget widgetBD(){
+    return
+      Container(
+        color : const Color.fromARGB(255, 20, 120, 80),
+        child: Column(
+          
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                titreSerie,
+                style: TextStyle(color: Colors.orange),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                tome.toString(),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                titreAlbum,
+              ),
+            ),
+          ]
+        ),
+      );
+      /*Padding(
+        padding: const EdgeInsets.all(8),
+        child: TextSpan(
+          children: <TextSpan>[
+            TextSpan(text: 'hello', style: TextStyle(color: Colors.red)),
+          ]
+        ),
+      )*/
+  }
+}
+
+/*
+      children: <Widget>[
+        Container(
+          height: 50,
+          color : theme.colorScheme.primary,
+          //color: theme.colorScheme.primary,
+          //color: (ThemeData get).colorScheme.primary,
+          child: const Center(child: Text('Entry A')),      
+        ),*/
