@@ -13,17 +13,25 @@ void main() => runApp(const BottomNavigationBarExampleApp());
 BandeDessinee bd1 = new BandeDessinee('Astérix',7,'Le combat des chefs','Uderzo - Goscinny',1966,4.61);
 BandeDessinee bd2 = new BandeDessinee('Astérix',11,'Le bouclier Arverne','Uderzo - Goscinny',1968,4.61);
 BandeDessinee bd3 = new BandeDessinee('Gaston',14,'La saga des gaffes','Franquin',1982,4.61);
-var favorites = <BandeDessinee>[bd1,bd2,bd3];
+var favorites = <BandeDessinee>[];
+var media = <BandeDessinee>[bd1,bd2,bd3];
 
 class BottomNavigationBarExampleApp extends StatelessWidget {
   const BottomNavigationBarExampleApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    
-    return MaterialApp(
-      theme: ThemeData(useMaterial3: true,colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 20, 120, 80))),
-      home: BottomNavigationBarExample(),
+    return ChangeNotifierProvider(
+      create: (context) => MyAppState(),
+      child: MaterialApp(
+        theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 20, 120, 80),
+          ),
+        ),
+        home: BottomNavigationBarExample(),
+      ),
     );
   }
 }
@@ -36,7 +44,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
       child: MaterialApp(
-        home: HomePage(),
+        home: MediaPage(),
       ),
     );
   }
@@ -44,14 +52,12 @@ class MyApp extends StatelessWidget {
 
 class MyAppState extends ChangeNotifier {
 
-  //var favorites = <WordPair>[];
-
   void toggleFavorite(current) {
-    ///if (favorites.contains(current)) {
-      ///favorites.remove(current);
-    ///} else {
-      ///favorites.add(current);
-    ///}
+    if (favorites.contains(current)) {
+      favorites.remove(current);
+    } else {
+      favorites.add(current);
+    }
     notifyListeners();
   }
 }
@@ -75,22 +81,7 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
       'Index 0: Home',
       style: optionStyle,
     ),
-    //Text(
-    //  'Index 1: Media',
-    //  style: optionStyle,
-    //),
-    ListView(
-      padding: const EdgeInsets.all(8),
-      children: <Widget>[
-        Container(
-          height: 50,
-          color : theme.colorScheme.primary,
-          //color: theme.colorScheme.primary,
-          //color: (ThemeData get).colorScheme.primary,
-          child: const Center(child: Text('Entry A')),      
-        ),
-      ],
-    ),
+    MediaPage(),
     FavoritesPage(),
     Text(
       'Index 2: About',
@@ -148,6 +139,14 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
   }
 }
 
+/*class HomePage extends StatelessWidget{
+  @override
+  Widget build(BuildContext, context) {
+    return
+      Text('HomePage');
+  }
+}*/
+
 class FavoritesPage extends StatelessWidget {
   @override
     ///@override
@@ -178,7 +177,7 @@ class FavoritesPage extends StatelessWidget {
         Wrap(
           spacing: 10, // Horizontal space
           runSpacing: 10, // Vertical space
-          children: favorites.map((bd) => bd.widgetBD()).toList(),
+          children: favorites.map((bd) => bd.widgetBD(context)).toList(),
         )
 
         /*for (var bd in favorites)
@@ -195,17 +194,26 @@ class FavoritesPage extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget{
+class MediaPage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    return 
-    Text(
-      'HomePage',
+    if (media.isEmpty) {
+      return Center(child: Text('No media available.'));
+    }
+
+    return ListView(
+      children: [
+        Wrap(
+          spacing: 10, // Horizontal space
+          runSpacing: 10, // Vertical space
+          children: media.map((bd) => bd.widgetBD(context)).toList(),
+        )
+      ],
     );
   }
 }
 
-//creating manually small db for tests
+//creating a class bandeDessinee
 
 class BandeDessinee{
   String titreSerie = "";
@@ -224,7 +232,8 @@ class BandeDessinee{
     note = n; 
   }
 
-  Widget widgetBD(){
+  Widget widgetBD(BuildContext context ){
+    var appState = context.watch<MyAppState>();
     return
       Container(
         color : const Color.fromARGB(255, 20, 120, 80),
@@ -235,7 +244,7 @@ class BandeDessinee{
               padding: const EdgeInsets.all(8),
               child: Text(
                 titreSerie,
-                style: TextStyle(color: Colors.orange),
+                style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
               ),
             ),
             Padding(
@@ -250,6 +259,11 @@ class BandeDessinee{
                 titreAlbum,
               ),
             ),
+            ElevatedButton.icon(
+              onPressed: () {
+                  appState.toggleFavorite(this);
+                },
+              label: Icon(Icons.favorite)),
           ]
         ),
       );
@@ -263,13 +277,3 @@ class BandeDessinee{
       )*/
   }
 }
-
-/*
-      children: <Widget>[
-        Container(
-          height: 50,
-          color : theme.colorScheme.primary,
-          //color: theme.colorScheme.primary,
-          //color: (ThemeData get).colorScheme.primary,
-          child: const Center(child: Text('Entry A')),      
-        ),*/
