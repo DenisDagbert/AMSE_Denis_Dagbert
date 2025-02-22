@@ -2,32 +2,62 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart';
+import 'dart:io';
+
 //import 'package:english_words/english_words.dart';
 
-void main() => runApp(const BottomNavigationBarExampleApp());
+Map tintinData = {"qrgstdhyf" : "rqstdf"};
 
-//creating small database manually (old)
-BandeDessinee asterix = BandeDessinee('Astérix',7,'Le combat des chefs','Uderzo - Goscinny',1966,4.61);
-BandeDessinee les_aventures_de_tintin = BandeDessinee('Les aventures de Tintin',2,'Tintin au congo','Hergé',1960,3.82);
-BandeDessinee gaston_lagaffe = BandeDessinee('Gaston',14,'La saga des gaffes','Franquin',1982,4.61);
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  Donnees.init().whenComplete(() {
+    runApp(const BottomNavigationBarExampleApp());
+    Map tintinData = Donnees.data!;
+  });
+}
 
-Film les_deux_tours = Film('Les deux tours',183,'Peter Jackson',2003,4.7);
+class Donnees {
+  static Map? data;
 
-//var favorites = <BandeDessinee>[];
-//var bd = <BandeDessinee>[bd1Old,bd2Old,bd3Old];
-//var film = <Film>[f1Old];
+  static Future<void> init() async {
+    var input = await rootBundle.loadString("assets/les_aventures_de_tintin.json");
+    data = jsonDecode(input);
+    return;
+  }
+}
 
-//var media = <BandeDessinee>[bd1,bd2,bd3];
-//List<Object> media = [...bd,...film];
-
-//the new database 
-Media bd1 = Media("Bande dessinée", "Astérix", 4.64,"asterix");
-Media bd2 = Media("Bande dessinée", "Gaston Lagaffe", 4.61,"gaston_lagaffe");
-Media bd3 = Media("Bande dessinée", "Les aventures de Tintin", 3.82,"les_aventures_de_tintin");
-Media f1 = Media("Film", "Les deux tours", 4.7,"les_deux_tours");
+//small database 
+Media bd1 = Media("Bande dessinée", "Astérix", 4.64,"asterix",{});
+Media bd2 = Media("Bande dessinée", "Gaston Lagaffe", 4.61,"gaston_lagaffe",{});
+Media bd3 = Media("Bande dessinée", "Les aventures de Tintin", 3.82,"les_aventures_de_tintin",tintinData);
+Media f1 = Media("Film", "Les deux tours", 4.7,"les_deux_tours",{});
 
 var media = [bd1,bd2,bd3,f1];
 var favorites = <Media>[];
+
+Future<Map<String, dynamic>> readJsonFile(String fileName) async {
+  //try {
+    // Open the file and read its content as a String
+    final file = File(fileName);
+    String fileContent = await file.readAsString();
+
+    // Decode the JSON content into a Map<String, dynamic>
+    Map<String, dynamic> jsonData = jsonDecode(fileContent);
+
+    // Return the decoded data
+    return jsonData;
+  /*} catch (e) {
+    // Handle any errors (e.g., file not found, invalid JSON)
+    print("Error reading or decoding the JSON file: $e");
+    return {}; // Return an empty map in case of error
+  }*/
+}
+
+//var tintinJson =  readJsonFile('les_aventures_de_tintin');
+//var tintinTomes = getAuteurFromFuture(tintinJson);
 
 class BottomNavigationBarExampleApp extends StatelessWidget {
   const BottomNavigationBarExampleApp({super.key});
@@ -234,13 +264,17 @@ class Media{
   String image = "insérer image";
   double note = 0; 
   String id = "";
+  Map json = {};
 
-  Media(String ty, String ti, double n, String i){
+  Media(String ty, String ti, double n, String i, Map j){
     type = ty;
     titre = ti;
     note = n;
     id = i;
+    json = j;
   }
+
+  Map tintinData = Donnees.data!;
 
   Widget toWidget(BuildContext context ){
       var appState = context.watch<MyAppState>();
@@ -294,10 +328,8 @@ class Media{
                               Text("Type: $type"),
                               Text("Titre: $titre"),
                               Text("Note: $note"),
-
-                              //the goal here will be to open a .json file named id.json
-                              //to get the info and display them.
-                              //it will also be necessary to open a .png file named id.png
+                              
+                              Text(tintinData.toString()),
 
                             ],
                           ),
@@ -319,6 +351,7 @@ class Media{
         );
     }
   }
+
 
 //creating a class bandeDessinee
 
