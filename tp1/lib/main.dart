@@ -4,17 +4,30 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 //import 'package:english_words/english_words.dart';
 
-
-/// Flutter code sample for [BottomNavigationBar].
-
 void main() => runApp(const BottomNavigationBarExampleApp());
 
-//creating small database  manually
-BandeDessinee bd1 = new BandeDessinee('Astérix',7,'Le combat des chefs','Uderzo - Goscinny',1966,4.61);
-BandeDessinee bd2 = new BandeDessinee('Astérix',11,'Le bouclier Arverne','Uderzo - Goscinny',1968,4.61);
-BandeDessinee bd3 = new BandeDessinee('Gaston',14,'La saga des gaffes','Franquin',1982,4.61);
-var favorites = <BandeDessinee>[];
-var media = <BandeDessinee>[bd1,bd2,bd3];
+//creating small database manually (old)
+BandeDessinee asterix = BandeDessinee('Astérix',7,'Le combat des chefs','Uderzo - Goscinny',1966,4.61);
+BandeDessinee les_aventures_de_tintin = BandeDessinee('Les aventures de Tintin',2,'Tintin au congo','Hergé',1960,3.82);
+BandeDessinee gaston_lagaffe = BandeDessinee('Gaston',14,'La saga des gaffes','Franquin',1982,4.61);
+
+Film les_deux_tours = Film('Les deux tours',183,'Peter Jackson',2003,4.7);
+
+//var favorites = <BandeDessinee>[];
+//var bd = <BandeDessinee>[bd1Old,bd2Old,bd3Old];
+//var film = <Film>[f1Old];
+
+//var media = <BandeDessinee>[bd1,bd2,bd3];
+//List<Object> media = [...bd,...film];
+
+//the new database 
+Media bd1 = Media("Bande dessinée", "Astérix", 4.64,"asterix");
+Media bd2 = Media("Bande dessinée", "Gaston Lagaffe", 4.61,"gaston_lagaffe");
+Media bd3 = Media("Bande dessinée", "Les aventures de Tintin", 3.82,"les_aventures_de_tintin");
+Media f1 = Media("Film", "Les deux tours", 4.7,"les_deux_tours");
+
+var media = [bd1,bd2,bd3,f1];
+var favorites = <Media>[];
 
 class BottomNavigationBarExampleApp extends StatelessWidget {
   const BottomNavigationBarExampleApp({super.key});
@@ -177,7 +190,7 @@ class FavoritesPage extends StatelessWidget {
         Wrap(
           spacing: 10, // Horizontal space
           runSpacing: 10, // Vertical space
-          children: favorites.map((bd) => bd.widgetBD(context)).toList(),
+          children: favorites.map((bd) => bd.toWidget(context)).toList(),
         )
 
         /*for (var bd in favorites)
@@ -206,12 +219,106 @@ class MediaPage extends StatelessWidget{
         Wrap(
           spacing: 10, // Horizontal space
           runSpacing: 10, // Vertical space
-          children: media.map((bd) => bd.widgetBD(context)).toList(),
+          children: media.map((m) => m.toWidget(context)).toList(),
         )
       ],
     );
   }
 }
+
+//creating a class media
+
+class Media{
+  String type = "";
+  String titre = "";
+  String image = "insérer image";
+  double note = 0; 
+  String id = "";
+
+  Media(String ty, String ti, double n, String i){
+    type = ty;
+    titre = ti;
+    note = n;
+    id = i;
+  }
+
+  Widget toWidget(BuildContext context ){
+      var appState = context.watch<MyAppState>();
+      return
+        Container(
+          color : const Color.fromARGB(255, 20, 120, 80),
+          child: Column(
+            
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(
+                  type,
+                  style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(
+                  titre,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(
+                  image,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(
+                  note.toString(),
+                ),
+              ),
+              ElevatedButton.icon(
+                onPressed: () {
+                    appState.toggleFavorite(this);
+                  },
+                label: Icon(Icons.favorite)),
+              ElevatedButton.icon(
+                onPressed: () {
+                    //show more info
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text(titre),
+                          content: Column(
+                            //mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text("Type: $type"),
+                              Text("Titre: $titre"),
+                              Text("Note: $note"),
+
+                              //the goal here will be to open a .json file named id.json
+                              //to get the info and display them.
+                              //it will also be necessary to open a .png file named id.png
+
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop(); // Close the popup
+                              },
+                              child: Text("Close"),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                label: Icon(Icons.density_medium)),
+            ]
+          ),
+        );
+    }
+  }
 
 //creating a class bandeDessinee
 
@@ -232,7 +339,7 @@ class BandeDessinee{
     note = n; 
   }
 
-  Widget widgetBD(BuildContext context ){
+  Widget toWidget(BuildContext context ){
     var appState = context.watch<MyAppState>();
     return
       Container(
@@ -267,13 +374,60 @@ class BandeDessinee{
           ]
         ),
       );
-      /*Padding(
-        padding: const EdgeInsets.all(8),
-        child: TextSpan(
-          children: <TextSpan>[
-            TextSpan(text: 'hello', style: TextStyle(color: Colors.red)),
+  }
+}
+
+//creating a class film
+
+class Film{
+  String titreFilm = "";
+  int duree = 0;
+  String realisateur = "";
+  int date = 0;
+  double note = 0;
+
+  Film(String tF, int du, String r, int da, double n){
+    titreFilm = tF;
+    duree = da;
+    realisateur = r;
+    date = da;
+    note = n; 
+  }
+
+  Widget toWidget(BuildContext context ){
+    var appState = context.watch<MyAppState>();
+    return
+      Container(
+        color : const Color.fromARGB(255, 20, 120, 80),
+        child: Column(
+          
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                titreFilm,
+                style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                duree.toString(),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                realisateur,
+              ),
+            ),
+            ElevatedButton.icon(
+              onPressed: () {
+                  appState.toggleFavorite(this);
+                },
+              label: Icon(Icons.favorite)),
           ]
         ),
-      )*/
+      );
   }
 }
