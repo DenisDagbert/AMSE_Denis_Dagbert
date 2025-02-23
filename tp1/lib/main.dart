@@ -8,14 +8,14 @@ import 'dart:io';
 
 //import 'package:english_words/english_words.dart';
 
-Map tintinData = {"qrgstdhyf" : "rqstdf"};
+Map mediaDB = {"x":"y"};
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   
   Donnees.init().whenComplete(() {
+    Map mediaDB = Donnees.data!;
     runApp(const BottomNavigationBarExampleApp());
-    Map tintinData = Donnees.data!;
   });
 }
 
@@ -23,7 +23,7 @@ class Donnees {
   static Map? data;
 
   static Future<void> init() async {
-    var input = await rootBundle.loadString("assets/les_aventures_de_tintin.json");
+    var input = await rootBundle.loadString("assets/mediaDB.json");
     data = jsonDecode(input);
     return;
   }
@@ -32,7 +32,7 @@ class Donnees {
 //small database 
 Media bd1 = Media("Bande dessinée", "Astérix", 4.64,"asterix",{});
 Media bd2 = Media("Bande dessinée", "Gaston Lagaffe", 4.61,"gaston_lagaffe",{});
-Media bd3 = Media("Bande dessinée", "Les aventures de Tintin", 3.82,"les_aventures_de_tintin",tintinData);
+Media bd3 = Media("Bande dessinée", "Les aventures de Tintin", 3.82,"les_aventures_de_tintin",mediaDB);
 Media f1 = Media("Film", "Les deux tours", 4.7,"les_deux_tours",{});
 
 var media = [bd1,bd2,bd3,f1];
@@ -274,7 +274,7 @@ class Media{
     json = j;
   }
 
-  Map tintinData = Donnees.data!;
+  Map mediaBD = Donnees.data!;
 
   Widget toWidget(BuildContext context ){
       var appState = context.watch<MyAppState>();
@@ -325,11 +325,19 @@ class Media{
                           content: Column(
                             //mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text("Type: $type"),
-                              Text("Titre: $titre"),
-                              Text("Note: $note"),
-                              
-                              Text(tintinData.toString()),
+                              if (type == "Bande dessinée") ...[
+                                Text("Catégorie: $type"),
+                                Text("Titre: $titre"),
+                                Text("Note: $note"),
+                                Text("Tomes: " + Donnees.data![id]["tomes"].toString()),
+                              ],
+                              if (type == "Film") ...[
+                                Text("Catégorie: $type"),
+                                Text("Titre: $titre"),
+                                Text("Note: $note"),
+                                Text("Réalisateur: " + Donnees.data![id]["realisateur"]),
+                                Text("Durée: " + Donnees.data![id]["duree"].toString()),
+                              ],
 
                             ],
                           ),
