@@ -43,9 +43,13 @@ Media f4 = Media("oignonheimer");
 Media f5 = Media("fight_club");
 
 Media cd1 = Media("the_dark_side_of_the_moon");
+Media cd2 = Media("thriller");
+Media cd3 = Media("the_hypnoflip_invasion");
+Media cd4 = Media("hybrid_theory");
+Media cd5 = Media("back_in_black");
 
-
-var media = [bd1,bd2,bd3,bd4,bd5,f1,f2,f3,f4,f5,cd1];
+var baseMedia = [bd1,bd2,bd3,bd4,bd5,f1,f2,f3,f4,f5,cd1,cd2,cd3,cd4,cd5];
+var media = baseMedia;
 var favorites = <Media>[];
 
 Future<Map<String, dynamic>> readJsonFile(String fileName) async {
@@ -64,6 +68,28 @@ Future<Map<String, dynamic>> readJsonFile(String fileName) async {
     print("Error reading or decoding the JSON file: $e");
     return {}; // Return an empty map in case of error
   }*/
+}
+
+List<Media> filterMedia(String filter){
+  if (filter == "all"){
+    return(baseMedia);
+  }
+  List<Media> filteredMedia = [];
+  for (int i = 0; i < baseMedia.length; i++){
+    if (baseMedia[i].type == filter){
+      filteredMedia.add(baseMedia[i]);
+    }
+  }
+  return(filteredMedia);
+}
+
+String updateFilter(String filter,String currentFilter){
+  if (filter == currentFilter){
+    return("all");
+  }
+  else{
+    return(filter);
+  }
 }
 
 //var tintinJson =  readJsonFile('les_aventures_de_tintin');
@@ -130,10 +156,6 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
   static var theme = ThemeData(useMaterial3: true,colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 45, 194, 110)));
   
   static List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
     MediaPage(),
     FavoritesPage(),
     Text(
@@ -166,10 +188,6 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.perm_media),
             label: 'Media',
@@ -223,15 +241,57 @@ class FavoritesPage extends StatelessWidget {
   }
 }
 
-class MediaPage extends StatelessWidget{
+class MediaPage extends StatefulWidget {
   @override
+  _MediaPageState createState() => _MediaPageState();
+}
+
+class _MediaPageState extends State<MediaPage> {
+  @override
+  String currentFilter = "all";
   Widget build(BuildContext context) {
     if (media.isEmpty) {
       return Center(child: Text('No media available.'));
     }
 
-    return ListView(
-      children: [
+    return 
+    ListView(
+      children:[
+        Row(
+          children: [
+            Text("Filtrer par catégorie :"),
+            ElevatedButton.icon(
+              onPressed: () {
+                setState(() {
+                  currentFilter = updateFilter("Bande dessinée", currentFilter);
+                  media = filterMedia(currentFilter);
+                });
+              },
+              icon: Icon(Icons.density_medium),
+              label: Text("BD"),
+            ),
+                        ElevatedButton.icon(
+              onPressed: () {
+                setState(() {
+                  currentFilter = updateFilter("Film", currentFilter);
+                  media = filterMedia(currentFilter);
+                });
+              },
+              icon: Icon(Icons.density_medium),
+              label: Text("Films"),
+            ),
+                        ElevatedButton.icon(
+              onPressed: () {
+                setState(() {
+                  currentFilter = updateFilter("Musique", currentFilter);
+                  media = filterMedia(currentFilter);
+                });
+              },
+              icon: Icon(Icons.density_medium),
+              label: Text("Albums"),
+            ),
+          ]
+        ),
         Wrap(
           spacing: 10, // Horizontal space
           runSpacing: 10, // Vertical space
@@ -308,7 +368,7 @@ class Media{
                             children: [
                               if (type == "Bande dessinée") ...[
                                 Text("Catégorie: $type"),
-                                Text("Titre: $titre"),
+                                //Text("Titre: $titre"),
                                 Text("Note: $note"),
                                 Text("Année: " + Donnees.data![id]["annee"].toString()),
                                 Text("Tomes: " + Donnees.data![id]["tomes"].toString()),
@@ -316,7 +376,7 @@ class Media{
                               ],
                               if (type == "Film") ...[
                                 Text("Catégorie: $type"),
-                                Text("Titre: $titre"),
+                                //Text("Titre: $titre"),
                                 Text("Note: $note"),
                                 Text("Année: " + Donnees.data![id]["annee"].toString()),
                                 Text("Réalisateur: " + Donnees.data![id]["realisateur"]),
@@ -325,7 +385,7 @@ class Media{
                               ],
                               if (type == "Musique") ...[
                                 Text("Catégorie: $type"),
-                                Text("Titre: $titre"),
+                                //Text("Titre: $titre"),
                                 Text("Note: $note"),
                                 Text("Année: " + Donnees.data![id]["annee"].toString()),
                                 Text("Artiste: " + Donnees.data![id]["artiste"]),
