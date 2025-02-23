@@ -14,7 +14,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   
   Donnees.init().whenComplete(() {
-    Map mediaDB = Donnees.data!;
+    //Map mediaDB = Donnees.data!;
     runApp(const BottomNavigationBarExampleApp());
   });
 }
@@ -30,12 +30,22 @@ class Donnees {
 }
 
 //small database 
-Media bd1 = Media("Bande dessinée", "Astérix", 4.64,"asterix",{});
-Media bd2 = Media("Bande dessinée", "Gaston Lagaffe", 4.61,"gaston_lagaffe",{});
-Media bd3 = Media("Bande dessinée", "Les aventures de Tintin", 3.82,"les_aventures_de_tintin",mediaDB);
-Media f1 = Media("Film", "Les deux tours", 4.7,"les_deux_tours",{});
+Media bd1 = Media("asterix");
+Media bd2 = Media("gaston_lagaffe");
+Media bd3 = Media("les_aventures_de_tintin");
+Media bd4 = Media("la_quete_de_l_oignon_du_temps");
+Media bd5 = Media("rubrique_a_brac");
 
-var media = [bd1,bd2,bd3,f1];
+Media f1 = Media("les_deux_tours");
+Media f2 = Media("shrek");
+Media f3 = Media("shrek_4");
+Media f4 = Media("oignonheimer");
+Media f5 = Media("fight_club");
+
+Media cd1 = Media("the_dark_side_of_the_moon");
+
+
+var media = [bd1,bd2,bd3,bd4,bd5,f1,f2,f3,f4,f5,cd1];
 var favorites = <Media>[];
 
 Future<Map<String, dynamic>> readJsonFile(String fileName) async {
@@ -182,23 +192,9 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
   }
 }
 
-/*class HomePage extends StatelessWidget{
-  @override
-  Widget build(BuildContext, context) {
-    return
-      Text('HomePage');
-  }
-}*/
-
 class FavoritesPage extends StatelessWidget {
   @override
-    ///@override
-  ///Widget build(BuildContext context) {
-    ///return 
-    ///Text(
-    ///  'FavoritesPage',
-    ///);
-  ///}
+
   Widget build(BuildContext context) {
     builder: (context,MyAppState);
     ///var appState = context.watch<MyAppState>();
@@ -222,16 +218,6 @@ class FavoritesPage extends StatelessWidget {
           runSpacing: 10, // Vertical space
           children: favorites.map((bd) => bd.toWidget(context)).toList(),
         )
-
-        /*for (var bd in favorites)
-          bd.widgetBD(),
-          SizedBox(
-            height: 10
-          ),
-          /*ListTile(
-            leading: Icon(Icons.favorite),
-            title: Text(pair.asLowerCase),
-          ),*/*/
       ],
     );
   }
@@ -264,17 +250,13 @@ class Media{
   String image = "insérer image";
   double note = 0; 
   String id = "";
-  Map json = {};
 
-  Media(String ty, String ti, double n, String i, Map j){
-    type = ty;
-    titre = ti;
-    note = n;
+  Media(String i,){
     id = i;
-    json = j;
+    type = (Donnees.data![id]["type"]);
+    titre = (Donnees.data![id]["titre"]);
+    note = (Donnees.data![id]["note"]);
   }
-
-  Map mediaBD = Donnees.data!;
 
   Widget toWidget(BuildContext context ){
       var appState = context.watch<MyAppState>();
@@ -282,7 +264,6 @@ class Media{
         Container(
           color : const Color.fromARGB(255, 20, 120, 80),
           child: Column(
-            
             children: [
               Padding(
                 padding: const EdgeInsets.all(8),
@@ -329,14 +310,27 @@ class Media{
                                 Text("Catégorie: $type"),
                                 Text("Titre: $titre"),
                                 Text("Note: $note"),
+                                Text("Année: " + Donnees.data![id]["annee"].toString()),
                                 Text("Tomes: " + Donnees.data![id]["tomes"].toString()),
+                                Text("Genre: " + Donnees.data![id]["genre"].toString()),
                               ],
                               if (type == "Film") ...[
                                 Text("Catégorie: $type"),
                                 Text("Titre: $titre"),
                                 Text("Note: $note"),
+                                Text("Année: " + Donnees.data![id]["annee"].toString()),
                                 Text("Réalisateur: " + Donnees.data![id]["realisateur"]),
                                 Text("Durée: " + Donnees.data![id]["duree"].toString()),
+                                Text("Genre: " + Donnees.data![id]["genre"].toString()),
+                              ],
+                              if (type == "Musique") ...[
+                                Text("Catégorie: $type"),
+                                Text("Titre: $titre"),
+                                Text("Note: $note"),
+                                Text("Année: " + Donnees.data![id]["annee"].toString()),
+                                Text("Artiste: " + Donnees.data![id]["artiste"]),
+                                Text("Durée: " + Donnees.data![id]["duree"].toString()),
+                                Text("Genre: " + Donnees.data![id]["genre"].toString()),
                               ],
 
                             ],
@@ -359,116 +353,3 @@ class Media{
         );
     }
   }
-
-
-//creating a class bandeDessinee
-
-class BandeDessinee{
-  String titreSerie = "";
-  int tome = 0;
-  String titreAlbum = "";
-  String auteur = "";
-  int date = 0;
-  double note = 0;
-
-  BandeDessinee(String tS, int t, String tA, String a, int d, double n){
-    titreSerie = tS;
-    tome = t;
-    titreAlbum = tA;
-    auteur = a;
-    date = d;
-    note = n; 
-  }
-
-  Widget toWidget(BuildContext context ){
-    var appState = context.watch<MyAppState>();
-    return
-      Container(
-        color : const Color.fromARGB(255, 20, 120, 80),
-        child: Column(
-          
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                titreSerie,
-                style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                tome.toString(),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                titreAlbum,
-              ),
-            ),
-            ElevatedButton.icon(
-              onPressed: () {
-                  appState.toggleFavorite(this);
-                },
-              label: Icon(Icons.favorite)),
-          ]
-        ),
-      );
-  }
-}
-
-//creating a class film
-
-class Film{
-  String titreFilm = "";
-  int duree = 0;
-  String realisateur = "";
-  int date = 0;
-  double note = 0;
-
-  Film(String tF, int du, String r, int da, double n){
-    titreFilm = tF;
-    duree = da;
-    realisateur = r;
-    date = da;
-    note = n; 
-  }
-
-  Widget toWidget(BuildContext context ){
-    var appState = context.watch<MyAppState>();
-    return
-      Container(
-        color : const Color.fromARGB(255, 20, 120, 80),
-        child: Column(
-          
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                titreFilm,
-                style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                duree.toString(),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                realisateur,
-              ),
-            ),
-            ElevatedButton.icon(
-              onPressed: () {
-                  appState.toggleFavorite(this);
-                },
-              label: Icon(Icons.favorite)),
-          ]
-        ),
-      );
-  }
-}
