@@ -70,6 +70,21 @@ flutter:
 
   assets:
     - assets/mediaDB.json
+    - assets/les_aventures_de_tintin.png
+    - assets/asterix.png
+    - assets/back_in_black.png
+    - assets/fight_club.png
+    - assets/gaston_lagaffe.png
+    - assets/hybrid_theory.png
+    - assets/la_quete_de_l_oignon_du_temps.png
+    - assets/les_deux_tours.png
+    - assets/oignonheimer.png
+    - assets/rubrique_a_brac.png
+    - assets/shrek_4.png
+    - assets/shrek.png
+    - assets/the_dark_side_of_the_moon.png
+    - assets/the_hypnoflip_invasion.png
+    - assets/thriller.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

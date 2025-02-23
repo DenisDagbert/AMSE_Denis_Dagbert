@@ -270,7 +270,7 @@ class _MediaPageState extends State<MediaPage> {
               icon: Icon(Icons.density_medium),
               label: Text("BD"),
             ),
-                        ElevatedButton.icon(
+            ElevatedButton.icon(
               onPressed: () {
                 setState(() {
                   currentFilter = updateFilter("Film", currentFilter);
@@ -340,9 +340,7 @@ class Media{
               ),
               Padding(
                 padding: const EdgeInsets.all(8),
-                child: Text(
-                  image,
-                ),
+                child: Image(image: AssetImage(id + ".png"), width: 100, height: 100,),
               ),
               Padding(
                 padding: const EdgeInsets.all(8),
@@ -368,6 +366,7 @@ class Media{
                             children: [
                               if (type == "Bande dessinée") ...[
                                 Text("Catégorie: $type"),
+                                Image(image: AssetImage(id + ".png"), width: 300, height: 300,),
                                 //Text("Titre: $titre"),
                                 Text("Note: $note"),
                                 Text("Année: " + Donnees.data![id]["annee"].toString()),
@@ -376,6 +375,7 @@ class Media{
                               ],
                               if (type == "Film") ...[
                                 Text("Catégorie: $type"),
+                                Image(image: AssetImage(id + ".png"), width: 300, height: 300,),
                                 //Text("Titre: $titre"),
                                 Text("Note: $note"),
                                 Text("Année: " + Donnees.data![id]["annee"].toString()),
@@ -385,6 +385,7 @@ class Media{
                               ],
                               if (type == "Musique") ...[
                                 Text("Catégorie: $type"),
+                                Image(image: AssetImage(id + ".png"), width: 300, height: 300,),
                                 //Text("Titre: $titre"),
                                 Text("Note: $note"),
                                 Text("Année: " + Donnees.data![id]["annee"].toString()),
