@@ -6,22 +6,16 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'dart:io';
 
-//import 'package:english_words/english_words.dart';
-
-Map mediaDB = {"x":"y"};
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   
   Donnees.init().whenComplete(() {
-    //Map mediaDB = Donnees.data!;
     runApp(const BottomNavigationBarExampleApp());
   });
 }
 
 class Donnees {
   static Map? data;
-
   static Future<void> init() async {
     var input = await rootBundle.loadString("assets/mediaDB.json");
     data = jsonDecode(input);
@@ -35,6 +29,7 @@ Media bd2 = Media("gaston_lagaffe");
 Media bd3 = Media("les_aventures_de_tintin");
 Media bd4 = Media("la_quete_de_l_oignon_du_temps");
 Media bd5 = Media("rubrique_a_brac");
+Media bd6 = Media("travis");
 
 Media f1 = Media("les_deux_tours");
 Media f2 = Media("shrek");
@@ -48,26 +43,21 @@ Media cd3 = Media("the_hypnoflip_invasion");
 Media cd4 = Media("hybrid_theory");
 Media cd5 = Media("back_in_black");
 
-var baseMedia = [bd1,bd2,bd3,bd4,bd5,f1,f2,f3,f4,f5,cd1,cd2,cd3,cd4,cd5];
+Media s1 = Media("sherlock");
+Media s2 = Media("les_cites_d_or");
+Media s3 = Media("chernobyl");
+
+var baseMedia = [bd1,bd2,bd3,bd4,bd5,bd6,f1,f2,f3,f4,f5,cd1,cd2,cd3,cd4,cd5,s1,s2,s3];
 var media = baseMedia;
 var favorites = <Media>[];
 
 Future<Map<String, dynamic>> readJsonFile(String fileName) async {
-  //try {
-    // Open the file and read its content as a String
-    final file = File(fileName);
-    String fileContent = await file.readAsString();
+  final file = File(fileName);
+  String fileContent = await file.readAsString();
 
-    // Decode the JSON content into a Map<String, dynamic>
-    Map<String, dynamic> jsonData = jsonDecode(fileContent);
+  Map<String, dynamic> jsonData = jsonDecode(fileContent);
 
-    // Return the decoded data
-    return jsonData;
-  /*} catch (e) {
-    // Handle any errors (e.g., file not found, invalid JSON)
-    print("Error reading or decoding the JSON file: $e");
-    return {}; // Return an empty map in case of error
-  }*/
+  return jsonData;
 }
 
 List<Media> filterMedia(String filter){
@@ -92,9 +82,6 @@ String updateFilter(String filter,String currentFilter){
   }
 }
 
-//var tintinJson =  readJsonFile('les_aventures_de_tintin');
-//var tintinTomes = getAuteurFromFuture(tintinJson);
-
 class BottomNavigationBarExampleApp extends StatelessWidget {
   const BottomNavigationBarExampleApp({super.key});
 
@@ -102,13 +89,15 @@ class BottomNavigationBarExampleApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => MyAppState(),
-      child: MaterialApp(
+      child: MaterialApp(  
         theme: ThemeData(
           useMaterial3: true,
+          primaryColor: const Color.fromARGB(255, 60, 230, 160),
           colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 20, 120, 80),
+            seedColor: const Color.fromARGB(255, 60, 230, 160),
           ),
         ),
+
         home: BottomNavigationBarExample(),
       ),
     );
@@ -153,13 +142,12 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
   int _selectedIndex = 0;
 
   static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static var theme = ThemeData(useMaterial3: true,colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 45, 194, 110)));
-  
+
   static List<Widget> _widgetOptions = <Widget>[
     MediaPage(),
     FavoritesPage(),
     Text(
-      'Index 2: About',
+      'Auteur : Denis Dagbert \n Version 1.0',
       style: optionStyle,
     ),
   ];
@@ -173,15 +161,10 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final style = theme.textTheme.displayMedium!.copyWith(
-      color: theme.colorScheme.onPrimary,
-    );
-
     return Scaffold(
       appBar: AppBar(
-        ///selectedItemColor: const Color.fromARGB(255, 20, 120, 80),
         backgroundColor: theme.colorScheme.primary, 
-        title: const Text('Bottom Text'),
+        title: const Text('TP1 App'),
       ),
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
@@ -202,7 +185,6 @@ class _BottomNavigationBarExampleState extends State<BottomNavigationBarExample>
           ),   
         ],
         currentIndex: _selectedIndex,
-        ///selectedItemColor: const Color.fromARGB(255, 20, 120, 80),
         selectedItemColor: theme.colorScheme.primary,
         onTap: _onItemTapped,
       ),
@@ -214,9 +196,6 @@ class FavoritesPage extends StatelessWidget {
   @override
 
   Widget build(BuildContext context) {
-    builder: (context,MyAppState);
-    ///var appState = context.watch<MyAppState>();
-
     if (favorites.isEmpty) {
       return Center(child: Text('No favorites yet.'));
     }
@@ -232,8 +211,8 @@ class FavoritesPage extends StatelessWidget {
         ),
 
         Wrap(
-          spacing: 10, // Horizontal space
-          runSpacing: 10, // Vertical space
+          spacing: 10, 
+          runSpacing: 10, 
           children: favorites.map((bd) => bd.toWidget(context)).toList(),
         )
       ],
@@ -247,8 +226,8 @@ class MediaPage extends StatefulWidget {
 }
 
 class _MediaPageState extends State<MediaPage> {
-  @override
   String currentFilter = "all";
+  @override
   Widget build(BuildContext context) {
     if (media.isEmpty) {
       return Center(child: Text('No media available.'));
@@ -280,7 +259,7 @@ class _MediaPageState extends State<MediaPage> {
               icon: Icon(Icons.density_medium),
               label: Text("Films"),
             ),
-                        ElevatedButton.icon(
+            ElevatedButton.icon(
               onPressed: () {
                 setState(() {
                   currentFilter = updateFilter("Musique", currentFilter);
@@ -290,11 +269,21 @@ class _MediaPageState extends State<MediaPage> {
               icon: Icon(Icons.density_medium),
               label: Text("Albums"),
             ),
+            ElevatedButton.icon(
+              onPressed: () {
+                setState(() {
+                  currentFilter = updateFilter("Série", currentFilter);
+                  media = filterMedia(currentFilter);
+                });
+              },
+              icon: Icon(Icons.density_medium),
+              label: Text("Séries"),
+            ),
           ]
         ),
         Wrap(
-          spacing: 10, // Horizontal space
-          runSpacing: 10, // Vertical space
+          spacing: 10, 
+          runSpacing: 10, 
           children: media.map((m) => m.toWidget(context)).toList(),
         )
       ],
@@ -322,14 +311,19 @@ class Media{
       var appState = context.watch<MyAppState>();
       return
         Container(
-          color : const Color.fromARGB(255, 20, 120, 80),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12.0),
+            color : const Color.fromARGB(255, 60, 230, 160),
+            ),
+          width: 200,
+          height: 320,
+          
           child: Column(
             children: [
               Padding(
                 padding: const EdgeInsets.all(8),
                 child: Text(
                   type,
-                  style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
                 ),
               ),
               Padding(
@@ -355,19 +349,17 @@ class Media{
                 label: Icon(Icons.favorite)),
               ElevatedButton.icon(
                 onPressed: () {
-                    //show more info
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: Text(titre),
                           content: Column(
-                            //mainAxisSize: MainAxisSize.min,
+                            mainAxisSize: MainAxisSize.min,
                             children: [
                               if (type == "Bande dessinée") ...[
                                 Text("Catégorie: $type"),
-                                Image(image: AssetImage(id + ".png"), width: 300, height: 300,),
-                                //Text("Titre: $titre"),
+                                Image(image: AssetImage(id + ".png"), width: 250, height: 250,),
                                 Text("Note: $note"),
                                 Text("Année: " + Donnees.data![id]["annee"].toString()),
                                 Text("Tomes: " + Donnees.data![id]["tomes"].toString()),
@@ -375,8 +367,7 @@ class Media{
                               ],
                               if (type == "Film") ...[
                                 Text("Catégorie: $type"),
-                                Image(image: AssetImage(id + ".png"), width: 300, height: 300,),
-                                //Text("Titre: $titre"),
+                                Image(image: AssetImage(id + ".png"), width: 250, height: 250,),
                                 Text("Note: $note"),
                                 Text("Année: " + Donnees.data![id]["annee"].toString()),
                                 Text("Réalisateur: " + Donnees.data![id]["realisateur"]),
@@ -385,21 +376,28 @@ class Media{
                               ],
                               if (type == "Musique") ...[
                                 Text("Catégorie: $type"),
-                                Image(image: AssetImage(id + ".png"), width: 300, height: 300,),
-                                //Text("Titre: $titre"),
+                                Image(image: AssetImage(id + ".png"), width: 250, height: 250,),
                                 Text("Note: $note"),
                                 Text("Année: " + Donnees.data![id]["annee"].toString()),
                                 Text("Artiste: " + Donnees.data![id]["artiste"]),
                                 Text("Durée: " + Donnees.data![id]["duree"].toString()),
                                 Text("Genre: " + Donnees.data![id]["genre"].toString()),
                               ],
-
+                              if (type == "Série") ...[
+                                Text("Catégorie: $type"),
+                                Image(image: AssetImage(id + ".png"), width: 250, height: 250,),
+                                Text("Note: $note"),
+                                Text("Année: " + Donnees.data![id]["annee"].toString()),
+                                Text("Réalisateur: " + Donnees.data![id]["realisateur"]),
+                                Text("Episodes: " + Donnees.data![id]["episodes"].toString()),
+                                Text("Genre: " + Donnees.data![id]["genre"].toString()),
+                              ],
                             ],
                           ),
                           actions: [
                             TextButton(
                               onPressed: () {
-                                Navigator.of(context).pop(); // Close the popup
+                                Navigator.of(context).pop(); 
                               },
                               child: Text("Close"),
                             ),
