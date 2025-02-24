@@ -238,7 +238,7 @@ class _MediaPageState extends State<MediaPage> {
       children:[
         Row(
           children: [
-            Text("Filtrer par catégorie :"),
+            Text("Filtrer par catégorie : "),
             ElevatedButton.icon(
               onPressed: () {
                 setState(() {
@@ -296,7 +296,6 @@ class _MediaPageState extends State<MediaPage> {
 class Media{
   String type = "";
   String titre = "";
-  String image = "insérer image";
   double note = 0; 
   String id = "";
 
